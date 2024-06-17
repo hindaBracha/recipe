@@ -1,0 +1,1488 @@
+~~~~~~~~~~💐~~~~~~~~~~~~Hi, the name of the authot : hinda, syndication : 31/10/2023 15:42:17~~~~~~~~~~~~💐~~~~~~~~~~
+
+
+---------------------Aadcategor.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Aadcategor.jsx--------------------
+import { useDispatch, useSelector } from "react-redux";
+import { addCatergy } from "./Set";
+import swal from "sweetalert";
+ export const Aadcategor = () => {
+    const categories=useSelector(x=>x.Categories)
+    const dispatch = useDispatch();   
+    /////Change---------------------------------------------------------------
+    const Change = (event) => {
+        debugger
+        if (!event.target[0].value) {
+             return false;
+        }
+        return true
+    } 
+    // ---send-------------------------------------------------------------
+    const send = (event) => {
+          event.preventDefault()
+        if (Change(event)) {
+            const id=categories[categories.length-1].codeCateg
+            const categor = {
+                name: event.target[0].value,
+                codeCateg:id+1             
+            }
+            dispatch(addCatergy(categor))
+            swal("נוסף בהצלחה", "had master", "success")
+        }
+        else alert("הלו!! הכנס רמה! טמבל")      
+    }
+    return <>
+        {/* ----categor------------------------------ */}
+        <form className='login' onSubmit={(e) => send(e)}>            
+            {/* ----level------------------------------ */}
+            <label htmlFor={'categor'}>add categor:</label>
+            <br></br>
+            <input id={'categor'} placeholder={'input categor '} ></input>
+            <br></br>
+            <input type={'submit'} value={'send'} className="btns"></input>
+            <br></br>            
+        </form>
+     </>
+}
+---------------------Aadingread.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Aadingread.jsx--------------------
+import { useDispatch, useSelector } from "react-redux";
+import {  addIngread } from "./Set";
+import swal from "sweetalert";
+ export const Aadingread = () => {
+    const dispatch = useDispatch(); 
+    const eee=useSelector(e=>e.Ingredients)  
+    /////Change---------------------------------------------------------------
+    const Change = (event) => {
+        if (!event.target[0].value) {
+             return false;
+        }
+        return true
+    } 
+    // ---send-------------------------------------------------------------
+    const send = (event) => {
+        debugger
+          event.preventDefault()
+          let id=eee[eee.length-1].Ingredid
+        if (Change(event)) {
+            const ingreadient = {
+                name: event.target[0].value ,
+                Ingredid:id+1             
+            }
+            dispatch(addIngread( ingreadient ))
+            swal(`נוסף בהצלחה,${ingreadient.name}`, "had master", "success")
+        }
+        else alert("הלו!! הכנס רמה! טמבל")      
+    }
+    return <>
+        {/* ----categor------------------------------ */}
+        <form className='login' onSubmit={(e) => send(e)}>            
+            {/* ----level------------------------------ */}
+            <label htmlFor={'ingread'}>add ingreadient:</label>
+            <br></br>
+            <input id={'ingread'} placeholder={'input name ingreadient '} ></input>
+            <br></br>
+            <input type={'submit'} value={'send'} className="btns"></input>
+            <br></br>           
+        </form>
+    </>
+}
+---------------------Aadlevel.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Aadlevel.jsx--------------------
+import { useDispatch, useSelector } from "react-redux";
+import { addLelel } from "./Set";
+import swal from "sweetalert";
+ export const Aadlevel = () => {
+    const Levels=useSelector(x=>x.Levels)
+    const id=Levels[Levels.length-1].code
+    const dispatch = useDispatch();
+    /////Change---------------------------------------------------------------
+    const Change = (event) => {
+        if (!event.target[0].value) {
+            alert("הלו!! הכנס רמה! טמבל"); return false;
+        }
+        return true
+    }
+    // ---send-------------------------------------------------------------
+    const send = (event) => {
+        event.preventDefault()
+        if (Change(event)) {
+            const level = {
+                code:id+1,
+                name: event.target[0].value
+            }
+            dispatch(addLelel(level))
+            swal("נוסף בהצלחה", "had master", "success")
+        }
+        else alert("נכשל")
+    }
+    return <>
+        <form className='login' onSubmit={(e) => send(e)}>
+            {/* ----level------------------------------ */}
+            <label htmlFor={'level'}>add level:</label>
+            <br></br>
+            <input id={'level'} placeholder={'input level recip'} ></input>
+            <br></br>
+            <input type={'submit'} value={'send'} className="btns"></input>
+            <br></br>
+        </form>
+     </>
+}
+---------------------Aadrecip.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Aadrecip.jsx--------------------
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import swal from "sweetalert";
+import { Container, Form } from "react-bootstrap";
+import { Addrecipe, addIngridToRecip } from "./Set";
+ export const Aadrecip = (props) => {
+    const codeuser = props
+    const Categories = useSelector(x => x.Categories);
+    const recipies = useSelector(x => x.recipes);
+    const levels = useSelector(x => x.Levels);
+    const ingreads = useSelector(x => x.Ingredients);
+    const IngredientsToRecipes = useSelector(x => x.IngredientsToRecipes);
+    const cuser = useSelector(x => x.currentUser)
+    const users = useSelector(x => x.users)
+    const [categor, setCatego] = useState()
+    const [level, setLavel] = useState()
+    const [selectedOptions, setSelectedOptions] = useState([]);
+    const [instrac, setInstrac] = useState();
+    const [image, setImage] = useState(null);
+    const [name, setName] = useState(null);
+    const [id, setId] = useState(IngredientsToRecipes[IngredientsToRecipes.length - 1].code);
+    const cuc = users.filter(u => u.mail == cuser.mail)
+    const dispatch = useDispatch();
+    const nav = useNavigate()
+    const handleOptionChange = (option) => {
+        if (selectedOptions.includes(option)) {
+            setSelectedOptions(selectedOptions.filter((item) => item !== option));
+        } else {
+            setSelectedOptions([...selectedOptions, option]);
+        }
+    }
+    /////Change---------------------------------------------------------------
+    const Change = () => {
+        if (!categor || !level || !selectedOptions || !instrac || !image || !name) {
+             return false;
+        }
+        return true
+    }
+    /////addingread---------------------------------------------------------------
+    const addingread = (i, index, recipid, id) => {
+        const ingreadstorecipe = {
+            code: id + 1 + index,
+            recipid: recipid + 1,
+            Ingredid: selectedOptions[index].Ingredid,
+            codeuser: cuc[0].id
+        }
+        dispatch(addIngridToRecip(ingreadstorecipe))
+    }
+     /////send---------------------------------------------------------------
+    const send = (event) => {
+        debugger
+        event.preventDefault()
+        const recipid = recipies[recipies.length - 1].recipid
+        if (Change()) {
+            const recip = {
+                recipid: recipid + 1,
+                name: name,
+                recippic: URL.createObjectURL(image),
+                instraction: instrac,
+                codeuser: cuc[0].id,
+                codeCateg: categor,
+                level: level
+            }
+             dispatch(Addrecipe(recip))
+            selectedOptions.map((l, index) => addingread(l, index, recipid, id))
+             swal("המתכון", "נוסף בהצלחה י'שף", "success")
+        }
+        else alert("הלו מלא את כל השדות טמבל")
+    }
+    debugger
+    return <>
+        {/* ----categor------------------------------ */}
+        <form className='login' onSubmit={(e) => send(e)}>
+            <label htmlFor="selcetCategor">select Categor:</label>
+            <br></br>
+            <select id="selcetCategor" onChange={(e) => setCatego(e.target.value)}>
+                <option value="" disabled selected hidden>בחר אפשרות</option>
+                {Categories.map((c, index) => <option key={index} value={c.codeCateg}>{c.name}</option>)}
+            </select>
+             {/* ----level------------------------------ */}
+            <label htmlFor="selcetLavel">select Lavel:</label>
+            <br></br>
+            <select id="selcetLavel" onChange={(e) => setLavel(e.target.value)}>
+                <option value="" disabled selected hidden>בחר אפשרות</option>
+                {levels.map((l, index) => <option key={index} value={l.code}>{l.name}</option>)}
+            </select>
+            {/* ----ingread------------------------------ */}
+            <label htmlFor="selcetingread">select ingread:</label>
+            <br></br>
+            <select multiple id="selcetingread">
+                {ingreads.map((option, index) => (
+                    <option key={index} value={option.Ingredid} onClick={() => handleOptionChange(option)}
+                    className={selectedOptions.includes(option) ? 'selected-option' : ''}
+                    >{option.name} </option>
+                ))}
+            </select>
+             {/* ---instrac---------------------------------------- */}
+            <label htmlFor="instrac"> instrac:</label>
+            <br></br>
+            <textarea rows="4" cols="38" className="instrac" id="instrac" onBlur={(e) => setInstrac(e.target.value)} />
+            {/* ---pic---------------------------------------- */}
+            <Container className="App">
+                <Form>
+                    <Form.Group controlId="formImage">
+                        <Form.Label>בחר תמונה</Form.Label>
+                        <Form.Control type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} />
+                    </Form.Group>
+                </Form>
+                <div className="image-preview">
+                     {image && <img src={URL.createObjectURL(image)} alt="תמונה" width={250} />}
+                </div>
+            </Container>
+            <br></br>
+            <label htmlFor={'name'}>recip name:</label>
+            <br></br>
+            <input id={'name'} placeholder={'input name recip'} onChange={(e) => setName(e.target.value)}></input>
+            {/*<br></br>
+      <label htmlFor={'pass'}>Password:</label>
+      <br></br>
+      <input id={'pass'} type={'password'} placeholder={'input password'}></input>
+      <br></br>*/}
+            <input type={'submit'} value={'send'} className="btns"></input>
+            <br></br>
+        </form>
+    </>
+}
+---------------------AccountMenu.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\AccountMenu.jsx--------------------
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
+import PersonAdd from '@mui/icons-material/PersonAdd';
+import Settings from '@mui/icons-material/Settings';
+import Logout from '@mui/icons-material/Logout';
+ export default function AccountMenu() {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  return (
+    <React.Fragment>
+      <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+        <Typography sx={{ minWidth: 100 }}>Contact</Typography>
+        <Typography sx={{ minWidth: 100 }}>Profile</Typography>
+        <Tooltip title="Account settings">
+          <IconButton
+            onClick={handleClick}
+            size="small"
+            sx={{ ml: 2 }}
+            aria-controls={open ? 'account-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+          >
+            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+          </IconButton>
+        </Tooltip>
+      </Box>
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={open}
+        onClose={handleClose}
+        onClick={handleClose}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 1.5,
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            '&:before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: 'background.paper',
+              transform: 'translateY(-50%) rotate(45deg)',
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem onClick={handleClose}>
+          <Avatar /> Profile
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <Avatar /> My account
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon>
+            <PersonAdd fontSize="small" />
+          </ListItemIcon>
+          Add another account
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon>
+            <Settings fontSize="small" />
+          </ListItemIcon>
+          Settings
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
+      </Menu>
+    </React.Fragment>
+  );
+}
+
+---------------------App.css--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\App.css--------------------
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+---------------------App.js--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\App.js--------------------
+import './App.css';
+import { Main } from '../src/Comp/Main';
+import { Operations } from './Comp/Operations';
+ function App() {
+  return <>
+  {/* <BasicTextFields></BasicTextFields> */}
+<Main/>
+{/* <BasicTextFields></BasicTextFields> */}
+{/* <BasicModal/> */}
+{/* <RecipeReviewCard/> */}
+{/* <AccountMenu></AccountMenu> */}
+{/* <Login></Login> */}
+{/* <PrimarySearchAppBar></PrimarySearchAppBar> */}
+{/* <Operations></Operations> */}
+{/* <Gg></Gg> */}
+</>
+}
+
+export default App;
+---------------------App.test.js--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\App.test.js--------------------
+import { render, screen } from '@testing-library/react';
+import App from './App';
+
+test('renders learn react link', () => {
+  render(<App />);
+  const linkElement = screen.getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
+});
+
+---------------------Cardrecip.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Cardrecip.jsx--------------------
+import * as React from 'react';
+import { styled } from '@mui/material/styles';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardMedia from '@mui/material/CardMedia';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Collapse from '@mui/material/Collapse';
+import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import ShareIcon from '@mui/icons-material/Share';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useNavigate } from 'react-router-dom'
+import '../Style/style.css'
+ const ExpandMore = styled((props) => {
+  const { expand, ...other } = props;
+  return <IconButton {...other} />;
+})(({ theme, expand }) => ({
+  transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+  marginLeft: 'auto',
+  float: 'left',
+  // margin: 'auto',//---------------------------------------Im
+  transition: theme.transitions.create('transform', {
+    duration: theme.transitions.duration.shortest,
+  }),
+}));
+//props.data
+export default function RecipeCard(props) {
+  let image = props.dataE
+  let id = props.dataF
+  let nav = useNavigate()
+  const Look = () => {//בעת לחיצה  על הכרטיס יראה את כול הנתונים
+    debugger
+    nav(`/Sall/${id}`)
+  }
+   const [expanded, setExpanded] = React.useState(false);
+  const handleExpandClick = () => {
+  };
+   return (
+    <Card sx={{ maxWidth: 345, marginLeft: 10, marginRight: 10, marginTop: 5, marginBlock: 5 }} onClick={() => Look()} className="Cardit">
+      <CardHeader
+        avatar={
+          <Avatar sx={{ bgcolor: '#4DFF00' }} aria-label="recipe" className='Card'>
+            {props.dataC}
+          </Avatar>
+        }
+        action={
+          <IconButton aria-label="settings">
+            <MoreVertIcon />
+          </IconButton>
+        }
+        title={props.dataA}
+        subheader={props.dataD}
+        instrac={props.dataB}
+      />
+      <CardMedia
+        component="img"
+        height="194"
+        image={image ? image : `${process.env.PUBLIC_URL}`}
+        alt="Paelhdish"
+      />
+      <CardContent className='aa'>
+        <Typography variant="body2" color="text.secondary">
+          This impressive paella is a perfect party dish and a fun meal to cook
+          together with your guests. Add 1 cup of frozen peas along with the mussels,
+          if you like.
+        </Typography>
+      </CardContent>
+      <CardActions disableSpacing>
+        <IconButton aria-label="add to favorites">
+          <FavoriteIcon />
+        </IconButton >
+        <IconButton aria-label="share">
+          <ShareIcon />
+        </IconButton>
+        <ExpandMore
+          expand={expanded}
+          onClick={handleExpandClick}
+          aria-expanded={expanded}
+          aria-label="show more"
+        >
+          <ExpandMoreIcon />
+        </ExpandMore>
+      </CardActions>
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <CardContent className='aa'>
+          <Typography paragraph >{props.dataB}</Typography>
+          <Typography paragraph >
+            Heat 1/2 cup of the broth in a pot until simmering, add saffron and set
+            aside for 10 minutes.
+          </Typography>
+          <Typography paragraph>
+            Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over
+            medium-high heat. Add chicken, shrimp and chorizo, and cook, stirring
+            occasionally until lightly browned, 6 to 8 minutes. Transfer shrimp to a
+            large plate and set aside, leaving chicken and chorizo in the pan. Add
+            pimentón, bay leaves, garlic, tomatoes, onion, salt and pepper, and cook,
+            stirring often until thickened and fragrant, about 10 minutes. Add
+            saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
+          </Typography>
+          <Typography paragraph>
+            Add rice and stir very gently to distribute. Top with artichokes and
+            peppers, and cook without stirring, until most of the liquid is absorbed,
+            15 to 18 minutes. Reduce heat to medium-low, add reserved shrimp and
+            mussels, tucking them down into the rice, and cook again without
+            stirring, until mussels have opened and rice is just tender, 5 to 7
+            minutes more. (Discard any mussels that don&apos;t open.)
+          </Typography>
+          <Typography>
+            Set aside off of the heat to let rest for 10 minutes, and then serve.
+          </Typography>
+        </CardContent>
+      </Collapse>
+    </Card>
+  );
+}
+---------------------Commen.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Commen.jsx--------------------
+import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
+import { addComment } from './Set'
+import { useState } from 'react'
+import EmojiPicker from 'emoji-picker-react';
+ export const Commen = (prop) => {
+    function CommentForm() {
+  const [chosenEmoji, setChosenEmoji] = useState(null);
+   const handleEmojiClick = (event, emojiObject) => {
+    setChosenEmoji(emojiObject);
+  };}
+    debugger
+    const currntUser = useSelector(x => x.currentUser)
+    const listCommentstorecipes = useSelector(x => x.CommentsToRecipes)
+    const users = useSelector(x => x.users)
+    let id = prop.id
+    const dispatch = useDispatch()
+    const [display, setDisplay] = useState(true)
+    let Code = listCommentstorecipes[listCommentstorecipes.length - 1].code
+    const cuc = users.filter(x=>x.mail==currntUser.mail)[0].id
+    let z
+    const AddComment = (event) => {
+        debugger
+        const Commen = {
+            code: Code + 1,
+            recipid: id,
+            codeuser: cuc,
+            Comments: event.target.value
+        }
+        dispatch(addComment(Commen))
+        setDisplay(false)
+    }
+    return <>
+        {listCommentstorecipes.map((c)=>c.recipid==id&&<p className='Comments' key={c.Comments}><p className='nameuser'>{z=(users.filter(x=>x.id==c.codeuser))[0].name}</p>{c.Comments}</p>)}
+       { currntUser.mail!=""&&display&& <p>הוספת תגובה</p> }
+       { currntUser.mail!=""&&display&&<input placeholder={'מחכים לתגובה שלך'} onBlur={(e) => { AddComment(e) }}></input>}
+    </>
+}
+---------------------Galery.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Galery.jsx--------------------
+import { useSelector } from "react-redux"
+import { Aadcategor } from "./Aadcategor"
+import { Aadingread } from "./Aadingread"
+import { Aadlevel } from "./Aadlevel"
+import { Aadrecip } from "./Aadrecip"
+import '../Style/staylregister.css'
+ export const Galery = () => {
+   debugger
+  const recipies=useSelector(x=>x.recipes)
+  const images=recipies.map((r)=>r.recippic)
+   return <>
+<div className="wraped">
+   {images.map((i)=><img src={i}></img>)}
+   </div>
+    </>
+}
+---------------------Home.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Home.jsx--------------------
+import logo from '../Pic/logo192.png'
+import meat from '../Pic/בשרבאש.png'
+import stam from '../Pic/logo.svg'
+import '../Style/styleHome.css'
+ export const Home = () => {
+    return <>
+        <h3>  Home Home Home Home Home Home Home Home Home Home Home Home Home Home Home Home Home Home Home Home Home Home Home Home Home Home </h3>
+        <div className='odot'>
+            <img src={logo} height={'200px'}></img>
+            <div className='articlel'><h2>!ברוכים הבאים לפסטיבל הטעמים שלנו</h2>
+                 <article>האתר שבפניכם הוא עולם מרתק ומגוון של מתכונים ייחודיים,
+                    <br />
+                    כל אחד בטעמו וברוחו. כאן תוכלו למצוא מאות מתכונים מכל העולם,
+                    <br />
+                     רעיונות למנות עיקריות, עטיפות, 
+                     <br />
+                     וקינוחים שיעטיפו את חברי המשפחה והחברים שלכם.
+                    <br />
+                </article></div>
+        </div>
+        <div className='weanmil'>
+            <img src={meat} height={'200px'}></img>
+            <div className='articlew'><h2>המתכון שכולם מחכים לו: סטייק ברביקיו עם טווח טעמים מטריף! 🍖</h2>
+                <article>
+                    שוטף הקיץ הגיע, ועמו הזמן להצטרף לקרב הברביקיו הגדול.
+                    <br />
+                    הסטייק, במרינדת תבלינים משובחה, מזוגג ברומן הגריל האמיתי.
+                    <br />
+                    הבשר, מיוחד וטעים בכל אחד מכם יכול להכין בו את הסטייק האישי שלו.
+                    <br />
+                    על האש החמה, עם תנור רומן רשמי, הוא יושם במרקם המושלם בכל פרסטקטיבה.
+                </article></div>
+        </div>
+        <div className='odot'>
+            <img src={stam} height={'200px'}></img>
+            <div className='articlel'><h2>!!תחרות קרב סכינים יוצאת לדרךךך</h2><article> קרב סכינים אינו דורש ידע כלשהו במטבח. <br />גם כאלו שלא החזיקו סכין מעולם (וגם בשלנים מנוסים) <br />מוצאים עצמם מבשלים ומכינים מנות מדהימות ומבטיחים<br /> לעצמם ש"השבוע הם יכינו את זה בבית" 😉
+             </article></div>
+        </div>
+    </>
+}
+---------------------index.css--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\index.css--------------------
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+---------------------index.js--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\index.js--------------------
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+
+---------------------Login.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Login.jsx--------------------
+import '../Style/style.css'
+import '../Style/staylregister.css'
+import { setCurrentUser } from './Set'
+import swal from 'sweetalert'
+import { useNavigate } from 'react-router-dom'
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+ export const Login = () => {
+    const dispatch = useDispatch();
+    const list = useSelector(x => x.users);
+    const nav = useNavigate()
+     const check = (mail, pass) => {
+        let ind = "undefined";
+        list.forEach((u, index) => {
+            if (u.mail === mail && u.password === pass) {
+                ind = index; return;
+            }
+        });
+        return ind;
+    }
+    const send = (event) => {
+        event.preventDefault()
+        let ind = check(event.target[0].value, event.target[1].value)
+        if (ind != "undefined") {
+            let namee = list[ind].name
+            const curentuser = {
+                name: namee,
+                mail: event.target[0].value
+            }
+            dispatch(setCurrentUser(curentuser))
+            swal(`שלום${list[ind].name}`, "התחברת בהצלחה", "success")
+            nav(`/Home`)
+         }
+        else alert("לא נמצא משתמש או שהסיסמא אינה נכונה")
+    }
+    const toSignin = () => {
+        nav(`/Singin`)
+    }
+    return <>
+        <div className="wraped">
+            <form className='login' onSubmit={(e) => send(e)}>
+                <label htmlFor={'email'}>Email:</label>
+                <br></br>
+                <input id={'email'} placeholder={'input email'}></input>
+                <br></br>
+                <label htmlFor={'pass'}>Password:</label>
+                <br></br>
+                <input id={'pass'} type={'password'} placeholder={'input password'}></input>
+                <br></br>
+                <input type={'submit'} value={'send'} className="btns"></input>
+                <button className="btns" onClick={() => toSignin()}>signin</button>
+                <br></br>
+            </form>
+        </div>
+        <h1>!!שבת אלינו, ידיד הבישול, אח למטבח, ורע לטעמים מיוחדים</h1>
+        <h4>יש לך הרבה טעמים לגלות ואנחנו כאן כדי להיות לצידך בכל הקרבות הטעימים שלך</h4>
+        <div>
+            הזן את הפרטים שלך,
+            <br />
+            והתחבר לעולם הטעמים והמתכונים המרשימים שלנו.
+            <br />
+            תראה מה יש חדש במבחר ותתחיל לבשל, לשתות, ולחלום על המתכונים הבאים.
+        </div>
+        <h2>אז מה אתה מחכה? התחבר ותחגוג טעמים חדשים</h2>
+    </>
+}
+---------------------Main.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Main.jsx--------------------
+import { Provider } from "react-redux";
+import { Nav } from "./Nav"
+import { Navhead } from "./Navhead";
+import { Routing } from "./Routing"
+import { BrowserRouter } from "react-router-dom";
+import store from "./Store";
+import { useState } from "react";
+ export const Main = () => {
+    let [bool,setBoll]=useState(true)
+        return <>
+            <Provider store={store}>
+                <BrowserRouter>
+                  {bool&&  <Navhead set={setBoll}></Navhead>}
+                  { <Nav set={setBoll}></Nav>}
+                    <Routing></Routing>
+                </BrowserRouter>
+            </Provider>
+        </>
+    }
+
+---------------------Myarea.css--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Style\Myarea.css--------------------
+/* body{ 
+    background-color:rgb(39, 36, 36);
+} */
+.Big{
+    margin-left: 10%;
+    color: black;  
+    display: flex; 
+}
+ /* @media screen {
+ } */
+---------------------Nav.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Nav.jsx--------------------
+import { NavLink } from 'react-router-dom'
+import '../Style/style.css'
+import home from'../Pic/Home.png'
+import rec from'../Pic/תודה להורים- נופש (30  30 סמ).png'
+import gal from'../Pic/אייקון גלריה.png'
+export const Nav = (props) => {
+    const {set}=props
+        return <>
+            <div className={'nav'}>
+            <NavLink to='RecipeReviewCard' className={'link'}onClick={() => set(true)}><img src={rec} width={'40px'} height={'40px'}></img></NavLink>
+            <NavLink to='Home' className={'link'}onClick={() => set(true)}><img src={home} width={'40px'} height={'40px'}></img></NavLink>
+            <NavLink to='Galery' className={'link'}onClick={() => set(true)}><img src={gal} width={'40px'} height={'40px'}></img></NavLink> 
+            </div>
+    </>
+}
+---------------------Navhead.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Navhead.jsx--------------------
+import { NavLink,useNavigate } from 'react-router-dom';
+import '../Style/style.css'
+import { useSelector } from 'react-redux';
+import person from'../Pic/personal.png'
+import swal from 'sweetalert';
+export const Navhead = (props) => {
+    const nav = useNavigate()
+    const cuser = useSelector(x => x.currentUser)
+    const manager = useSelector(x => x.Manager)
+    const { set } = props
+    const pa = () => {
+        debugger
+        if(cuser.mail){
+        set(false) 
+        nav(`Personalyaera`) } 
+        else swal(`נכשל`,"עליך להירשם למערכת","error")     
+    }
+    const flogin = () => {
+        nav(`/Login`)
+    }
+    const fsingin = () => {
+        nav(`/Singin`)
+    }
+     const nameorm = () => {
+        if(cuser.mail==manager.mail)
+        return true
+        return false
+          }
+    return <>
+        <div className={'navhead'}>
+            <button className='btnregist' onClick={flogin}>התחברות</button>
+            <button className='btnregist' onClick={fsingin}>הרשמה</button>
+            <button className='btnpersonal' onClick={() => pa()}>👤</button>
+            {/* <NavLink to='' className={'link'}onClick={() => pa()}><img src={person} width={'40px'} height={'40px'}></img></NavLink>  */}
+            {/* <img src={person} width={'40px'} height={'40px'}></img> */}
+            {!nameorm()&&<label className='a' >{cuser.name}</label>}
+            {nameorm()&&<label className='a' >מנהל/ת</label>}
+        </div>
+    </>
+}
+---------------------Operations.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Operations.jsx--------------------
+import { useSelector } from "react-redux"
+import { Aadcategor } from "./Aadcategor"
+import { Aadingread } from "./Aadingread"
+import { Aadlevel } from "./Aadlevel"
+import { Aadrecip } from "./Aadrecip"
+import '../Style/staylregister.css'
+ export const Operations = () => {
+  const cuser=useSelector(x=>x.currentUser)
+  const users=useSelector(x=>x.users)
+  const Manager=useSelector(x=>x.Manager)
+  let codeuser=users.map((u,i)=>{if(u.mail==cuser.mail)return u.id})
+   return <>
+<div className="wraped">
+   <Aadrecip codeuser="codeuser"></Aadrecip>
+   {cuser.mail==Manager.mail&&<Aadlevel></Aadlevel>}
+   {cuser.mail==Manager.mail&&<Aadcategor></Aadcategor>}
+   <Aadingread></Aadingread>
+   </div>
+    </>
+}
+---------------------Personalyaera.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Personalyaera.jsx--------------------
+import * as React from 'react';
+import Avatar from '@mui/material/Avatar';
+import { IconButton, Tooltip } from '@mui/material';
+import { display } from '@mui/system';
+import { useSelector } from 'react-redux'
+import '../Style/Myarea.css'
+import { useNavigate } from 'react-router-dom';
+import RecipeCard from './Cardrecip';
+ export const Personalyaera = () => { 
+    const recipes = useSelector(x => x.recipes)
+    let [okMyrecipe, setokMyrecipe] = React.useState(false)
+    const currntUser = useSelector(x => x.currentUser)
+    const users = useSelector(x => x.users)
+    const [Sort, setSort] = React.useState([])
+    const cuc = users.filter(x=>x.mail==currntUser.mail)[0].id
+ let nav=useNavigate()
+    const Myrecipe = () => {
+        debugger
+        setSort(recipes.filter(a => a.codeuser == cuc))
+        { Sort && setokMyrecipe(true) }
+    }
+     return <>
+        {!okMyrecipe && <Tooltip sx={{marginLeft:30 }}>
+            <IconButton
+                onClick={()=>{nav(`/Operations`)}}
+            ><Avatar className='Big' sx={{ width: 450, height: 450, bgcolor: '#4DFF00' }} >operations</Avatar></IconButton>
+        </Tooltip>}
+       {!okMyrecipe &&<Tooltip sx={{marginLeft:20}}>
+            <IconButton
+                onClick={()=>Myrecipe()}
+            ><Avatar className='Big' sx={{ width: 450, height: 450, bgcolor: '#4DFF00'}} >My recipes</Avatar></IconButton>
+        </Tooltip>}
+        {okMyrecipe && Sort.map((i) => <RecipeCard dataA={i.name} dataB={i.instraction} dataC={i.level} dataD={i.codeCateg} dataE={i.recippic} dataF={i.recipid}></RecipeCard>)}
+    </>
+}
+ 
+---------------------Recip.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Recip.jsx--------------------
+import * as React from 'react';
+import { useSelector } from 'react-redux'
+import '../Style/style.css'
+import RecipeCard from './Cardrecip';
+ export const RecipeReviewCard = () => {
+  const list = useSelector(x => x.recipes)
+  const listLevel = useSelector(x => x.Levels)
+  const listCategories = useSelector(x => x.Categories)
+  const [Sort, setSort] = React.useState([])
+  let [OkLevel, setOkLevel] = React.useState(false)
+  let [OkCatigory, setOkCatigory] = React.useState(false)
+  // const cCateg=listCategories.filter(x=>x.codeCateg==categorid)
+   const Level = (e) => {
+    setSort(list.filter(a => a.level == e))
+    { Sort && setOkLevel(true) }
+  }
+   const Catigory = (e) => {
+    setSort(list.filter(a => a.codeCateg == e))
+    { Sort && setOkCatigory(true) }
+  }
+  const cancel = () => {
+    setOkLevel(false)
+    setOkCatigory(false)
+  }
+  return <>
+    <select id="SlectorLevel" onChange={(e) => Level(e.target.value)} className='selectit'>
+      <option value="" disabled selected hidden>סנן לפי רמה</option>
+      {listLevel.map((c, index) => <option key={index} value={c.code} className='option' >{c.name}</option>)}
+    </select>
+    <select id="SlectorCatigory" onChange={(e) => Catigory(e.target.value)} className='selectit'>
+      <option value="" disabled selected hidden>סנן לפי קטגוריה</option>
+      {listCategories.map((c, index) => <option key={index} value={c.codeCateg} className='option'>{c.name}</option>)}
+    </select>
+    <button className='cancel' onClick={() => cancel()}>✖️</button>
+    {(OkCatigory || OkLevel) && Sort.map((i) => <RecipeCard dataA={i.name} dataB={i.instraction} dataC={i.level} dataD={listCategories.filter(x=>x.codeCateg==i.codeCateg)[0].name} dataE={i.recippic} dataF={i.recipid}></RecipeCard>)}
+    {!OkLevel && !OkCatigory && list.map((i) => <RecipeCard dataA={i.name} dataB={i.instraction} dataC={i.level} dataD={listCategories.filter(x=>x.codeCateg==i.codeCateg)[0].name}dataE={i.recippic} dataF={i.recipid}></RecipeCard>)}
+  </>
+  //   {(OkCatigory || OkLevel) && Sort.map((i) => <RecipeCard dataA={i.name} dataB={i.instraction} dataC={i.level} dataD={i.codeCateg} dataE={i.recippic} dataF={i.recipid}></RecipeCard>)}
+  //   {!OkLevel && !OkCatigory && list.map((i) => <RecipeCard dataA={i.name} dataB={i.instraction} dataC={i.level} dataD={i.codeCateg} dataE={i.recippic} dataF={i.recipid}></RecipeCard>)}
+  // </>
+}
+
+---------------------reportWebVitals.js--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\reportWebVitals.js--------------------
+const reportWebVitals = onPerfEntry => {
+  if (onPerfEntry && onPerfEntry instanceof Function) {
+    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+      getCLS(onPerfEntry);
+      getFID(onPerfEntry);
+      getFCP(onPerfEntry);
+      getLCP(onPerfEntry);
+      getTTFB(onPerfEntry);
+    });
+  }
+};
+
+export default reportWebVitals;
+
+---------------------Routing.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Routing.jsx--------------------
+import { Route, Routes } from 'react-router-dom'
+import { Singin } from './Singin'
+import { Main } from './Main'
+import { Navhead } from './Navhead'
+import { Home } from './Home'
+import { Galery } from './Galery'
+import { RecipeReviewCard } from './Recip'
+import { Personalyaera } from './Personalyaera'
+import { Sall } from './Sall'
+import { Commen } from './Commen'
+import { Operations } from './Operations'
+import { Aadrecip } from './Aadrecip'
+import { Login } from './Login'
+export const Routing = () => {
+    return <>
+        <Routes>
+             <Route path={'/'} element={<Home></Home>}></Route>
+            <Route path={'Main'} element={<Main></Main>}></Route>
+            <Route path={'Home'} element={<Home></Home>}></Route>
+            <Route path={'login'} element={<Login></Login>}></Route>
+            <Route path={'Singin'} element={<Singin></Singin>}></Route>
+            <Route path={'Navhead'} element={<Navhead></Navhead>}></Route>
+            <Route path={'Galery'} element={<Galery></Galery>}></Route>
+            <Route path={'Operations'} element={<Operations></Operations>}></Route>
+            <Route path={'RecipeReviewCard'} element={<RecipeReviewCard></RecipeReviewCard>}></Route>
+            <Route path={'Personalyaera'} element={<Personalyaera></Personalyaera>}></Route>
+            <Route path={'Sall/:id'} element={<Sall></Sall>}></Route>
+            <Route path={'Aadrecip'} element={<Aadrecip></Aadrecip>}>
+            <Route path={'Commen'} element={<Commen></Commen>}></Route>
+            </Route>
+         </Routes>
+    </>
+}
+---------------------sall.css--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Style\sall.css--------------------
+.sall{
+width: 40%;
+margin: auto;
+margin-right: 20px;
+margin-left: 50px;
+/* border-radius: 5px;
+border: 1px solid #000000; */
+/* text-align: center; */
+float: left;
+direction: rtl;
+}
+#dtls{
+    direction: ltr;
+}
+.title{
+    color: rgb(21, 255, 0);
+    font-size: 40px;
+}
+.wrsppComments{
+border-radius: 10px;
+/* border: 1px solid #000000; */
+float: left;
+width: 100%;
+ }
+.Comments{
+border-radius: 5px;
+border: 1px solid #000000;
+width: 100%;
+}
+.titleCommen{
+    font-size: 30px;
+    color: rgb(68, 255, 0);
+}
+/* input{
+    border-radius: 10px;
+    border: 1px solid #2fff00;
+} */
+.nameuser{
+    border-radius: 5px;
+background-color: #2fff00;
+    width: 100%;
+}
+---------------------Sall.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Sall.jsx--------------------
+import { useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
+import { Commen } from './Commen'
+import '../Style/sall.css'
+ export const Sall = () => {
+    const recipes = useSelector(x => x.recipes)
+    const ingread = useSelector(x => x.IngredientsToRecipes)
+    const Ingredients = useSelector(x => x.Ingredients)
+    let param = useParams()
+    let id = param.id
+    const crec = recipes.find(r => r.recipid == id)
+    const ingreadids = ingread.filter(i => i.recipid == id)
+    const filteredNames = ingreadids.map(obj => obj.Ingredid)
+    let namesArray
+    let filteredObjects
+    return <>
+         <div className='sall'>
+            <p className='title'>{crec.name} </p>
+            <img src={crec.recippic} alt="תמונה" width={450} />
+        </div>
+        <div className='sall' id='dtls'>
+            <p className='title'>instractions</p>
+            <p>{crec.instraction} </p>
+            <p className='title'>ingreadients</p>
+             {/* --------------------------------------------------------- */}
+            <div>
+                {filteredNames.map(code => {
+                    filteredObjects = Ingredients.filter(obj => obj.Ingredid === code);
+                    namesArray = filteredObjects.map(obj => obj.name);
+                     return (
+                        <div key={code}>
+                            <ul>
+                                {namesArray.map(name => (
+                                    <li key={name}>{name}</li>))}
+                            </ul>
+                        </div>);
+                })}
+            </div>
+        </div>
+        <div className='wrsppComments'>
+            <p className='titleCommen'>Comments➕</p>
+            <Commen id={id}></Commen>
+        </div>
+    </>
+}
+---------------------Set.js--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Set.js--------------------
+//פונקציות עריכה
+ export const setCurrentUser = (user) => {
+    return { type: 'SET_CURRENT_USER', payload: user }
+}
+ export const Addrecipe = (neww) => {
+    return { type: 'ADD_RECIP', payload: neww }
+}
+export const addUser = (newUser) => {
+    return { type: 'ADD_USER', payload: newUser }
+}
+export const addCatergy = (neww) => {
+    return { type: 'ADD_CATEGORY', payload: neww }
+}
+export const addLelel = (neww) => {
+    return { type: 'ADD_LEVEL', payload: neww }
+}
+export const addIngread = (neww) => {
+    return { type: 'ADD_INGREAD', payload: neww }
+}
+export const addIngridToRecip = (neww) => {
+    return { type: 'ADD_INGREAD_TO_RESIP', payload: neww }
+}
+export const addComment = (neww) => {
+    return { type: 'ADD_COMMENT', payload: neww }
+}
+ // export const addrecip = (recip) => {
+//     return { type: 'ADD_RECIP', payload: product }
+// }
+ 
+---------------------setupTests.js--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\setupTests.js--------------------
+// jest-dom adds custom jest matchers for asserting on DOM nodes.
+// allows you to do things like:
+// expect(element).toHaveTextContent(/react/i)
+// learn more: https://github.com/testing-library/jest-dom
+import '@testing-library/jest-dom';
+
+---------------------Singin.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Singin.jsx--------------------
+import { useDispatch, useSelector } from "react-redux"
+import { addUser, setCurrentUser } from "./Set"
+import swal from "sweetalert"
+import { useNavigate } from "react-router-dom"
+import '../Style/staylregister.css'
+ export const Singin = () => {
+  const dispatch = useDispatch()
+  const list = useSelector(x => x.users)
+  const nav = useNavigate()
+   const check = (mail, pass) => {
+    let bool = true
+    list.map((u) => { if (u.mail == mail) { alert("כתובת האימייל קיימת במערכת"); bool = false; return } })
+    if (!bool) return false
+    if (pass.length < 4) { alert("היי!! הסיסמא קצרה מדי !! לפחות 4 תווים"); return false }
+    if (!mail.includes('@')) { alert(" ! כפרה אמייל לא תקין"); return false }
+    return true
+  }
+  const send = (event) => {
+    event.preventDefault()
+    let name = event.target[0].value
+     if (check(event.target[1].value, event.target[2].value)) {
+      let numid = list[list.length - 1].id
+      const curentuser = {
+        name: name,
+        mail: event.target[1].value
+      }
+      const user = {
+        id: numid + 1,
+        name: name,
+        mail: event.target[1].value,
+        password: event.target[2].value
+      }
+      dispatch(setCurrentUser(curentuser))
+      dispatch(addUser(user))
+      swal(`שלום${name}`, "התחברת בהצלחה", "success");
+      nav(`/Home`)
+    }
+   }
+  const toLogin = () => {
+    nav(`/Login`)
+  }
+  return <>
+    <div className="wraped">
+      <form className='login' onSubmit={(e) => send(e)}>
+        <label htmlFor={'name'}>name:</label><br></br>
+        <input id={'name'} placeholder={'input name'}></input>
+        <br></br>
+        <label htmlFor={'email'}>Email:</label><br></br>
+        <input id={'email'} placeholder={'input email'}></input>
+        <br></br>
+        <label htmlFor={'pass'}>Password:</label><br></br>
+        <input id={'pass'} type={'password'} placeholder={'input password'}></input>
+        <br></br>
+        <input type={'submit'} value={'send'} className="btns"></input>
+        <button className="btns" onClick={() => toLogin()}>להתחברות</button>
+        <br></br>
+      </form>
+    </div>
+    <h1>!ברוכים הבאים לאתר  מאמבורגר</h1>
+    <h4>אם אתם אוהבים לבשל ולטעום מנות טעימות בבית, אתר זה הוא המקום המושלם עבורכם</h4>
+    <div>
+      כאן תוכלו לגלות מאות מתכונים מכל העולם,
+      <br />
+      לשתף במתכונים שלכם ולהתנסות בקריאת מתכונים חדשים ומרתקים ממגוון רחב של סגנונות וטעמים.
+      <br />
+      כדי להתחיל, אנא מלאו את הפרטים הבסיסיים שלכם וצרו לכם חשבון אישי. 
+      <br/>
+      זה פשוט וקל, ותוכלו לגלות את כל היתרונות שהאתר מציע.
+      <br/>
+     בצעד הבא, תוכלו לשתף את המתכונים שאתם אוהבים ולקבל המלצות ממתכונים מנוסים בקהילה שלנו.
+     <br/>
+     אנחנו מקווים שתהנו מהשהייה אצלנו ושתמצאו המון השראה טובה לבישולים משובחים.
+    </div>
+    <h3>אז למה תחכו? הצטרפו אלינו עוד היום והתחילו לגלות את עולם הטעמים שבפניכם!</h3>
+  </>
+}
+---------------------staylregister.css--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Style\staylregister.css--------------------
+.login {
+    width: 300px;
+    margin: auto;
+    border-radius: 5px;
+    background-color: #ffffff;
+    padding: 20px;
+    border: 1px solid #000000;
+    float: left;
+    margin: 20px;
+    box-shadow: 2px 6px 5px rgba(0, 0, 0, 0.3);
+ }
+ label {
+    font-size: large;
+}
+ input {
+    padding: 12px 20px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 200px;
+}
+ .btns {
+    padding: 8px 8px;
+    border: 1px solid #59ff00;
+    background-color: #00ff1ab0;
+    border-radius: 4px;
+    width: 95px;
+    text-align: center;
+    direction: rtl;
+    margin: 5px;
+}
+ .btns:hover {
+    border: 1px solid #000000;
+    background-color: #00ff1ae9;
+}
+select{
+    padding: 12px 20px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 300px;
+}
+.wraped{
+    width: 1100px;
+    margin: auto;
+}
+.selected-option {
+    background-color: rgb(0, 255, 0); /* כאשר האופציה נבחרת, צבע הרקע יהיה ירוק */
+  }
+---------------------Store.js--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Store.js--------------------
+import { produce } from 'immer';
+import { createStore } from 'redux';
+ const initialState = {
+    users: [
+        { id: 1, name: 'Shulamit', mail: 'shb7101@gmail.com', password: '7101' },
+        { id: 2, name: 'Israel', mail: 'il0504123229@gmail.com', password: '1111' },
+        { id: 3, name: 'Michal', mail: 'mk0527660151@gmail.com', password: '0151' },
+        { id: 4, name: 'ayala', mail: 'ayala.amt@gmail.com', password: '1111' }
+    ],
+    Manager: { mail: "ayala.amt@gmail.com" },
+    currentUser:
+        { name: 'אורח/ת', mail:"" },
+    recipes: [
+        { recipid: 1, name: "sweetmeat", recippic: "../pic/Home", instraction: "cevewgbrgb fef rfefv", codeuser: 2, codeCateg: 1, level: 1, },
+        // { recipid: 2, name: "גלידה קייצית", recippic: "../pic/Home", instraction: "cevewgbrgb fef rfefv", codeuser: 1, codeCateg: 2, level: 2, },
+        // { recipid: 3, name: "טורטיה", recippic: "../pic/Home", instraction: "cevewgbrgb fef rfefv", codeuser: 2, codeCateg: 4, level: 3, },
+        // { recipid: 4, name: "עוף מוקפץ צ'ימיצ'ורי", recippic: "../pic/Home", instraction: "cevewgbrgb fef rfefv", codeuser: 3, codeCateg: 1, level: 1, },
+    ],
+    Categories: [
+        { codeCateg: 1, name: "בשרים" },
+        { codeCateg: 2, name: "אחרונות" },
+        { codeCateg: 3, name: "עיקרי" },
+        { codeCateg: 4, name: "פתיחה" }
+     ],
+    Levels: [
+        { code: 1, name: "קל" },
+        { code: 2, name: "בינוני" },
+        { code: 3, name: "קשה" }
+    ],
+    Ingredients: [
+        { Ingredid: 1, name: "בשר" },
+        { Ingredid: 2, name: "צימוקים" },
+        { Ingredid: 3, name: "קמח" }
+    ],
+    IngredientsToRecipes: [
+        { code: 1, recipid: 1, Ingredid: 1, codeuser: 1 },
+        { code: 2, recipid: 1, Ingredid: 1, codeuser: 1 }
+    ],
+    CommentsToRecipes: [
+        { code: 1, recipid: 1, codeuser: 1, Comments: "hgfdsafghj" },
+        { code: 2, recipid: 2, codeuser: 1, Comments: "hgfdsafghj" }
+    ]
+ }
+const reducer = produce((state, action) => {
+     switch (action.type) {
+        case 'SET_CURRENT_USER':
+            state.currentUser = action.payload
+            break;
+        case 'ADD_USER':
+            state.users = [...state.users, action.payload]
+            break;
+        case 'ADD_RECIP':
+            state.recipes = [...state.recipes, action.payload]
+            break;
+        case 'ADD_CATEGORY':
+            state.Categories = [...state.Categories, action.payload]
+            break;
+        case 'ADD_LEVEL':
+            state.Levels = [...state.Levels, action.payload]
+            break;
+        case 'ADD_INGREAD':
+            state.Ingredients = [...state.Ingredients, action.payload]
+            break;
+        case 'ADD_INGREAD_TO_RESIP':
+            state.IngredientsToRecipes = [...state.IngredientsToRecipes, action.payload]
+            break;
+        case 'ADD_COMMENT':
+            state.CommentsToRecipes = [...state.CommentsToRecipes, action.payload]
+            break;
+        default:
+            break;
+    }
+ }, initialState)
+ const store = createStore(reducer)
+window.store = store;
+export default store;
+---------------------style.css--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Style\style.css--------------------
+.nav {
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0);
+    height: 3rem;
+    width: 100vw;
+    font-size: large;
+    padding: 1rem 0;
+    justify-content: center;
+ }
+ .link {
+    color: rgb(9, 255, 0);
+    margin: 2rem;
+    text-decoration: none;
+}
+ .link:hover {
+    color: chartreuse;
+}
+ .navhead {
+    background-color: rgb(0, 0, 0);
+    box-shadow: 2px 6px 5px rgba(0, 0, 0, 0.3);
+    height: 3rem;
+    width: 100vw;
+    font-size: large;
+    padding: 1rem 0;
+    direction: rtl;
+    margin-bottom: 10px;
+    /* position: fixed; */
+}
+ .btnpersonal {
+    background-color: rgb(60, 255, 0);
+    border-radius: 40px;
+    border: 1px solid rgb(60, 255, 0);
+    height: 40px;
+    width: 40px;
+    padding: 8px 8px;
+    margin: 10px;
+}
+ h3 {
+    color: black;
+}
+ .a {
+    color: rgb(77, 255, 0);
+}
+ .aa :hover {
+    background-color: rgb(72, 255, 0);
+}
+ .btnregist {
+    background-color: rgb(60, 255, 0);
+    border-radius: 4px;
+    border: 1px solid rgb(60, 255, 0);
+    height: 40px;
+    width: 100px;
+    padding: 8px 8px;
+    margin: 10px;
+}
+.selectit{
+    text-align: center;
+    font-size:20px;
+    width: 47%;
+    border-radius: 30px;
+    border-color:rgb(72, 255, 0);/* black;*/
+    border-width: 1px;
+    background-color: rgb(72, 255, 0);
+    height: 30px;
+    padding: 0px;
+}
+.option{
+    text-align: center;
+    font-size:large;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+}
+.option :hover{
+    /* למה לא עובד */
+    background-color: rgb(4, 255, 0); 
+    color: rgb(240, 245, 236);
+}
+.cancel{
+    text-align: center;
+    font-size:20px;
+    width: 6%;
+    border-radius: 30px;
+    border-color:rgb(72, 255, 0);/* black;*/
+    border-width: 1px;
+    background-color: rgb(72, 255, 0);
+    height: 30px;
+    padding: 0px;
+}
+.Card{
+    display: flex;
+}
+.Cardit{
+     /* background-color: rgb(72, 255, 0);   
+    display: flex;      */
+    float: left;
+}
+
+---------------------styleHome.css--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Style\styleHome.css--------------------
+.odot {
+    border: 2px solid black;
+    margin-top: 100px;
+    margin: 30px;
+    padding: 10px;
+    box-shadow: 2px 6px 5px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+.weanmil{
+    border: 2px solid black;
+    margin: 30px;
+    padding: 10px;
+    direction: rtl;
+    box-shadow: 2px 6px 5px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+.articlew{
+    float: left;
+}
+.articlel{
+    float: right;
+ }
+h2{
+    float: left;
+}
+---------------------Users.jsx--------------------
+---------------------D:\The user\Desktop\לימודים\-בהצלחה-שנה ב\project_recipe\src\Comp\Users.jsx--------------------
+import { useSelector } from 'react-redux'
+ export const Users = () => {
+     //get from state
+    //שליפות מהסטור באמצתעות סלקטור
+    const list = useSelector(x => x.users)
+    // const list = useSelector(store => store.users)
+     return <>
+        <h1>{list.length}</h1>
+        {list.map((u, index) => <p key={index}>{u.id}{u.name} - {u.email} - {u.password}</p>)}
+    </>
+}
